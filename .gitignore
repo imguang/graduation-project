@@ -1,0 +1,6 @@
+.settings
+blog.iml
+.log
+/target/ 
+.project
+.classpath
