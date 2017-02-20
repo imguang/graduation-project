@@ -22,9 +22,30 @@ import com.imguang.demo.utils.IdGenerator;
 public class WOSPaperFormatterImpl implements IPaperFormatter {
 
 	public static final String LINE_REGEXP = "^[A-Z][A-Z1-9].*$";
+	public static final int DOI_PREFIX = "DOI ".length();
+	public static int cnt_null_DI = 0;
 
-	public static String getStringAndDealOnMap(Map<String, List<String>> goal,String key,char c){
-		return StringUtils.join(goal.get(key),c);
+	public static List<String> drawCRDOI(List<String> list){
+		if(list == null || list.size() <= 0){
+			return null;
+		}
+		List<String> DOIs = new ArrayList<String>();
+		for (String string : list) {
+			int beginIndex = string.lastIndexOf("DOI ");
+			if(beginIndex == -1){
+				continue;
+			}
+			DOIs.add(string.substring(beginIndex + DOI_PREFIX).trim());
+		}
+		return DOIs;
+	}
+	
+	public static String getDOI(List<String> list){
+		if(list == null || list.size() <= 0){
+			cnt_null_DI++;
+			return null;
+		}
+		return list.get(0).trim();
 	}
 	
 	public TemPaper splitOne(Map<String, List<String>> oneMap){
@@ -33,13 +54,15 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 		}
 		TemPaper temPaper = new TemPaper();
 		temPaper.setId(IdGenerator.getUUID());
-		temPaper.setTitle(getStringAndDealOnMap(oneMap, "TI",' '));
-		temPaper.setAbContent(getStringAndDealOnMap(oneMap, "AB",' '));
-		temPaper.setAuthor(getStringAndDealOnMap(oneMap, "AU",';'));
-		temPaper.setKey_word(getStringAndDealOnMap(oneMap, "ID",' '));
-		temPaper.setLan_type(getStringAndDealOnMap(oneMap, "LA",' '));
+		temPaper.setTitle(StringUtils.join(oneMap.get("TI"),' '));
+		temPaper.setAbContent(StringUtils.join(oneMap.get("AB"),' '));
+		temPaper.setAuthor(StringUtils.join(oneMap.get("AU"),';'));
+		temPaper.setKey_word(StringUtils.join(oneMap.get("ID"),' '));
+		temPaper.setLan_type(StringUtils.join(oneMap.get("LA"),' '));
 		temPaper.setLink_path(null);
 		temPaper.setLocal_path("tem");
+		temPaper.setCitedReferenceIds(drawCRDOI(oneMap.get("CR")));
+		temPaper.setDOI(getDOI(oneMap.get("DI")));
 		System.out.println(temPaper);
 		return temPaper;
 	}
@@ -52,7 +75,7 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 		Map<String, List<String>> nowMap = new HashMap<String, List<String>>();
 		int cnt = 0;
 		int size = lines.size();
-		for(int i=0;i < size;i++){
+		for(int i=0;i < size;i++){//逐行分析
 			String oneLine = lines.get(i);
 			if(oneLine.equals("") || oneLine.length() < 2){
 				continue;
@@ -63,7 +86,7 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 				nowName = name;
 				nowList = new ArrayList<String>();
 				nowList.add(content);
-				if(name.equals("FN")){
+				if(name.equals("FN")){//文件开始
 					System.out.println("file name is:"+content.trim());
 					continue;
 				}
@@ -71,12 +94,12 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 					System.out.println("version num is:" + content);
 					continue;
 				}
-				if (name.equals("PT")) {
+				if (name.equals("PT")) {//一条记录的开始
 					cnt ++;
 					System.out.println("the " + cnt + " record is begin");
 					continue;
 				}
-				if (name.equals("ER")) {
+				if (name.equals("ER")) {//一条记录结束
 					TemPaper temPaper = splitOne(nowMap);
 					if(temPaper != null){
 						temPapers.add(temPaper);
@@ -85,7 +108,7 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 					System.out.println("the " + cnt + " record is end");
 					continue;
 				}
-				if(name.equals("EF")){
+				if(name.equals("EF")){//文件结束
 					System.out.println("deal done!");
 					break;
 				}

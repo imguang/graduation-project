@@ -4,3 +4,4 @@ blog.iml
 /target/ 
 .project
 .classpath
+/target/

@@ -1,5 +1,7 @@
 package com.imguang.demo.clean.paper;
 
+import java.util.List;
+
 /**
  * @author 书生
  *
@@ -14,6 +16,21 @@ public class TemPaper {
 	private String local_path;
 	private String link_path;
 	private String key_word;
+	private List<String> citedReferenceIds;
+	private String DOI;
+	
+	public List<String> getCitedReferenceIds() {
+		return citedReferenceIds;
+	}
+	public void setCitedReferenceIds(List<String> citedReferenceIds) {
+		this.citedReferenceIds = citedReferenceIds;
+	}
+	public String getDOI() {
+		return DOI;
+	}
+	public void setDOI(String dOI) {
+		DOI = dOI;
+	}
 	
 	public String getKey_word() {
 		return key_word;
@@ -69,11 +86,7 @@ public class TemPaper {
 	public String toString() {
 		return "TemPaper [id=" + id + ", title=" + title + ", abContent=" + abContent + ", lan_type=" + lan_type
 				+ ", author=" + author + ", local_path=" + local_path + ", link_path=" + link_path + ", key_word="
-				+ key_word + "]";
+				+ key_word + ", citedReferenceIds=" + citedReferenceIds + ", DOI=" + DOI + "]";
 	}
-	
-	
-	
-	
 	
 }
