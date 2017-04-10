@@ -13,7 +13,7 @@ import org.apdplat.word.util.WordConfTools;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
-import com.imguang.demo.train.prepare.handler.NewsTesiteHandler;
+import com.imguang.demo.train.prepare.handler.NewsTensiteHandler;
 import com.imguang.demo.train.prepare.split.ANSJDoSplitImpl;
 import com.imguang.demo.train.prepare.split.IDoSplit;
 import com.imguang.demo.train.prepare.split.WordDoSplitImpl;
@@ -42,11 +42,14 @@ public class main {
 	 */
 	public static void parseXml() throws Exception{
 		SAXReader saxReader = new SAXReader();
-		saxReader.setDefaultHandler(new NewsTesiteHandler(BASE_PATH+"result01.txt"));
+		saxReader.setDefaultHandler(new NewsTensiteHandler(BASE_PATH+"result01.txt"));
 		saxReader.setEncoding("UTF-8");
 		saxReader.read(new File(BASE_PATH + "03.dat"));
 	}
 	
+	/**
+	 * 初始化
+	 */
 	public static void init(){
 		urlSet = new HashSet<String>();
 //		dosplitImpl = new WordDoSplitImpl();

@@ -33,10 +33,14 @@
 		</javaClientGenerator>
 		
 		
-		<table tableName="pubmed" domainObjectName="Pubmed"
+		<table tableName="xywy_disease_url" domainObjectName="XywyDiseaseUrl"
 			enableCountByExample="true" enableUpdateByExample="true"
 			enableDeleteByExample="true" enableSelectByExample="true"
 			selectByExampleQueryId="true" />
+<!-- 		<table tableName="pubmed" domainObjectName="Pubmed"
+			enableCountByExample="true" enableUpdateByExample="true"
+			enableDeleteByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" /> -->
 <!-- 		<table tableName="order_item" domainObjectName="OrderItem"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"

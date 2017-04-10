@@ -25,6 +25,11 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 	public static final int DOI_PREFIX = "DOI ".length();
 	public static int cnt_null_DI = 0;
 
+	/**
+	 * @param list
+	 * @return
+	 * 提取出引用论文的DOI值
+	 */
 	public static List<String> drawCRDOI(List<String> list){
 		if(list == null || list.size() <= 0){
 			return null;
@@ -40,12 +45,29 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 		return DOIs;
 	}
 	
+	/**
+	 * @param list
+	 * @return
+	 * 获得本文章的DOI值
+	 */
 	public static String getDOI(List<String> list){
 		if(list == null || list.size() <= 0){
 			cnt_null_DI++;
 			return null;
 		}
 		return list.get(0).trim();
+	}
+	
+	/**
+	 * @param list
+	 * @return
+	 * 从list中第一个转成Integer
+	 */
+	public static Integer getIntegerFromList(List<String> list){
+		if(list == null || list.size() <= 0){
+			return null;
+		}
+		return Integer.valueOf(list.get(0).trim());
 	}
 	
 	public TemPaper splitOne(Map<String, List<String>> oneMap){
@@ -63,6 +85,8 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 		temPaper.setLocal_path("tem");
 		temPaper.setCitedReferenceIds(drawCRDOI(oneMap.get("CR")));
 		temPaper.setDOI(getDOI(oneMap.get("DI")));
+		temPaper.setTimesCited(getIntegerFromList(oneMap.get("TC")));
+		temPaper.setPublishYear(getIntegerFromList(oneMap.get("PY")));
 		System.out.println(temPaper);
 		return temPaper;
 	}

@@ -7,6 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * @author 书生
+ * 替代和添加大文件中的内容
+ */
 public class ReplaceAndAddToHugeFile {
 
 	public static void replace(String fromFileName, String toFileName, String replacement, String target, String begin,

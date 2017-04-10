@@ -18,7 +18,23 @@ public class TemPaper {
 	private String key_word;
 	private List<String> citedReferenceIds;
 	private String DOI;
+	private Integer publishYear;
+	private Integer timesCited;
 	
+	
+	
+	public Integer getPublishYear() {
+		return publishYear;
+	}
+	public void setPublishYear(Integer publishYear) {
+		this.publishYear = publishYear;
+	}
+	public Integer getTimesCited() {
+		return timesCited;
+	}
+	public void setTimesCited(Integer timesCited) {
+		this.timesCited = timesCited;
+	}
 	public List<String> getCitedReferenceIds() {
 		return citedReferenceIds;
 	}
@@ -86,7 +102,9 @@ public class TemPaper {
 	public String toString() {
 		return "TemPaper [id=" + id + ", title=" + title + ", abContent=" + abContent + ", lan_type=" + lan_type
 				+ ", author=" + author + ", local_path=" + local_path + ", link_path=" + link_path + ", key_word="
-				+ key_word + ", citedReferenceIds=" + citedReferenceIds + ", DOI=" + DOI + "]";
+				+ key_word + ", citedReferenceIds=" + citedReferenceIds + ", DOI=" + DOI + ", publishYear="
+				+ publishYear + ", timesCited=" + timesCited + "]";
 	}
+	
 	
 }

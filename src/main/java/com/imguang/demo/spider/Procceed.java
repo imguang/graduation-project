@@ -1,6 +1,5 @@
 package com.imguang.demo.spider;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,9 +10,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.imguang.demo.dao.PubmedMapper;
+import com.imguang.demo.dao.XywyDiseaseUrlMapper;
 import com.imguang.demo.spider.pipeline.PubmedPipeline;
+import com.imguang.demo.spider.pipeline.XywyDiseaseListPipeline;
 import com.imguang.demo.spider.processor.PubmedDetailProcessor;
 import com.imguang.demo.spider.processor.PubmedListProcessor;
+import com.imguang.demo.spider.processor.XywyDiseaseListProcessor;
 import com.imguang.demo.spider.scheduler.remover.DoNothingRemover;
 
 import us.codecraft.webmagic.Request;
@@ -27,10 +29,15 @@ public class Procceed {
 	public static Logger logger = LoggerFactory.getLogger("com.imguang.demo.procceed");
 	public static List<String> pubidList = new LinkedList<String>();
 
-	public static PubmedPipeline pubmedPipeline = null;
+	private static PubmedPipeline pubmedPipeline = null;
 	private static ApplicationContext ac = null;
-	public static PubmedDetailProcessor pubmedDetailProcessor = null;
-	public static PubmedListProcessor pubmedListProcessor = null;
+	private static PubmedDetailProcessor pubmedDetailProcessor = null;
+	private static PubmedListProcessor pubmedListProcessor = null;
+	
+	private static XywyDiseaseListPipeline xywyDiseaseListPipeline = null;
+	private static XywyDiseaseListProcessor xywyDiseaseListProcessor = null;
+	
+	private static XywyDiseaseUrlMapper xywyDiseaseUrlMapper = null;
 	
 	public static PubmedMapper pubmedMapper = null;
 	
@@ -40,7 +47,18 @@ public class Procceed {
 		return temUrl;
 	}
 	
-	public static void spiderOfList(){
+	public static void xywyList(){
+		String beginUrl = "http://jib.xywy.com/html/neike.html";
+		logger.info("spider for disease beigin!");
+		Request request = new Request();
+		request.putExtra("flag", 0);
+		request.setUrl(beginUrl);
+		Spider.create(xywyDiseaseListProcessor).addPipeline(xywyDiseaseListPipeline)
+		.addRequest(request).thread(1).run();
+		logger.info("spider for list done!");
+	}
+	
+	public static void spiderPubmedOfList(){
 		//target url @EXP
 		String beginUrl = "https://www.ncbi.nlm.nih.gov/pubmed/?term=ischemic+placental+disease";
 		logger.info("spider for list begin!");
@@ -75,34 +93,18 @@ public class Procceed {
 		pubmedDetailProcessor = (PubmedDetailProcessor) ac.getBean("pubmedDetailProcessor");
 		pubmedListProcessor = (PubmedListProcessor) ac.getBean("pubmedListProcessor");
 		pubmedMapper = (PubmedMapper)ac.getBean("pubmedMapper");
+		xywyDiseaseListPipeline = ac.getBean(XywyDiseaseListPipeline.class);
+		xywyDiseaseListProcessor = ac.getBean(XywyDiseaseListProcessor.class);
+		xywyDiseaseUrlMapper = ac.getBean(XywyDiseaseUrlMapper.class);
 	}
 	
 	public static void main(String[] args) {
-		// String keyWord="ischemic placental disease";
-		// rule1
-		// http://www.medlive.cn/pubmed/pubmed_search.do?page=34&q=ischemic+placental+disease
-		// gain pubmedId method1
-		// String temUrl =
-		// "http://www.medlive.cn/pubmed/pubmed_search.do?q=ischemic+placental+disease&page=";
-		// logger.info("spider begin!");
-		// Request request = new Request();
-		// request.setUrl(temUrl+"1");
-		// request.putExtra("pageNum", 1);
-		// request.putExtra("urlTemp", temUrl);
-		// Spider pubmedListSpider = Spider.create(new
-		// PubmedListProcessor()).thread(1);
-		// pubmedListSpider.addRequest(request).run();
-		// pubmedListSpider.close();
-		// //
-		// int totNum = pubidList.size();
-		// logger.info("爬取结束，共爬取" + totNum + "条数据！\n");
-		// logger.info("spider end!");
-		// method 2
+//		init();
+//		spiderOfList();
+//		//test
+//		spiderOfDetail();
 		init();
-		spiderOfList();
-		//test
-		spiderOfDetail();
-		
+		xywyList();
 	}
 
 }

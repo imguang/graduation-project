@@ -30,7 +30,7 @@ public class Test {
 //		String urlPath = "F:\\gProject\\data\\cnki\\CNKI_01.xml";
 		String urlPath = "C:\\Users\\书生\\Desktop\\毕设\\WOS\\data\\download_1.txt";
 		List<TemPaper> temPapers = paperFormatter.doFormat(urlPath);
-		int cnt = 0;
+		/*int cnt = 0;
 		for (TemPaper temPaper : temPapers) {
 			List<String> DOIs = temPaper.getCitedReferenceIds();
 			if(DOIs == null || DOIs.size() <= 0)
@@ -45,7 +45,7 @@ public class Test {
 				}
 			}
 		}
-		System.out.println(cnt);
+		System.out.println(cnt);*/
 	}
 
 }
