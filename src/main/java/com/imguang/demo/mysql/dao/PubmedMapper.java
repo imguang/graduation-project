@@ -1,9 +1,10 @@
-package com.imguang.demo.dao;
+package com.imguang.demo.mysql.dao;
 
-import com.imguang.demo.model.Pubmed;
-import com.imguang.demo.model.PubmedExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import com.imguang.demo.mysql.model.Pubmed;
+import com.imguang.demo.mysql.model.PubmedExample;
 
 public interface PubmedMapper {
     int countByExample(PubmedExample example);

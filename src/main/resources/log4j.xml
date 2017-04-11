@@ -16,6 +16,10 @@
             <param name="ConversionPattern" value="%d %-5p %l - %m%n"/>  
         </layout>  
     </appender>  
+    <logger name="com.imguang.demo.spider.processor.XywysymptomDetailProcessor">
+    	<level value="info"/>
+    	<appender-ref ref="fileout" />
+    </logger>
 
     <logger name="org.springframework" additivity="false">
         <level value="warn" />

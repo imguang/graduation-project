@@ -10,10 +10,11 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.imguang.demo.dao.PubmedMapper;
-import com.imguang.demo.model.Pubmed;
+import com.imguang.demo.mysql.dao.PubmedMapper;
+import com.imguang.demo.mysql.model.Pubmed;
 
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -26,7 +27,7 @@ import us.codecraft.webmagic.pipeline.Pipeline;
  * 2.将内容保存到文件中
  *
  */
-@Repository
+@Component
 public class PubmedPipeline implements Pipeline {
 
 	public static String file_path = "C:\\Users\\书生\\Desktop\\毕设\\pubmed\\data\\";

@@ -9,12 +9,13 @@
                         http://www.springframework.org/schema/context/spring-context-3.1.xsd  
                         http://www.springframework.org/schema/mvc  
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
-	<context:component-scan base-package="com.imguang.demo" />
-	<!-- 自动扫描
 	<context:component-scan base-package="com.imguang.demo">
-		<context:exclude-filter type="annotation"
-			expression="org.springframework.stereotype.Controller" />
-	</context:component-scan> -->
+		<!-- <context:exclude-filter type="annotation"
+			expression="org.springframework.context.annotation.Configuration" /> -->
+	</context:component-scan>
+	<!-- 自动扫描 <context:component-scan base-package="com.imguang.demo"> <context:exclude-filter 
+		type="annotation" expression="org.springframework.stereotype.Controller" 
+		/> </context:component-scan> -->
 
 
 	<!-- 引入配置文件 -->
@@ -45,12 +46,13 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<!-- 自动扫描mapping.xml文件 -->
-		<property name="mapperLocations" value="classpath:com/imguang/demo/mapping/*.xml"></property>
+		<property name="mapperLocations"
+			value="classpath:com/imguang/demo/mysql/mapping/*.xml"></property>
 	</bean>
 
 	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.imguang.demo.dao" />
+		<property name="basePackage" value="com.imguang.demo.mysql.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
 
@@ -59,5 +61,6 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+
 
 </beans>

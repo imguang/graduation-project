@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.imguang.demo.mysql.dao.XywyDiseaseUrlMapper;
-import com.imguang.demo.mysql.model.XywyDiseaseUrl;
+import com.imguang.demo.mysql.dao.XywySymptomUrlMapper;
+import com.imguang.demo.mysql.model.XywySymptomUrl;
 
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -21,23 +21,23 @@ import us.codecraft.webmagic.pipeline.Pipeline;
  * 疾病链接处理
  */
 @Component
-public class XywyDiseaseListPipeline implements Pipeline {
+public class XywySymptomListPipeline implements Pipeline {
 	
-	Logger log = LoggerFactory.getLogger(XywyDiseaseListPipeline.class);
+	Logger log = LoggerFactory.getLogger(XywySymptomListPipeline.class);
 
 	@Autowired
-	XywyDiseaseUrlMapper xywyDiseaseUrlMapper;
+	XywySymptomUrlMapper xywySymptomUrlMapper;
 	
 	public void process(ResultItems resultItems, Task task) {
 		List<String> urList = resultItems.get("links");
-		List<XywyDiseaseUrl> xywyDiseaseUrls = new ArrayList<XywyDiseaseUrl>();
+		List<XywySymptomUrl> XywySymptomUrls = new ArrayList<XywySymptomUrl>();
 		for (String string : urList) {
-			XywyDiseaseUrl xywyDiseaseUrl = new XywyDiseaseUrl();
-			xywyDiseaseUrl.setUrl(string.trim());
-			xywyDiseaseUrls.add(xywyDiseaseUrl);
+			XywySymptomUrl XywySymptomUrl = new XywySymptomUrl();
+			XywySymptomUrl.setUrl(string.trim());
+			XywySymptomUrls.add(XywySymptomUrl);
 		}
-		xywyDiseaseUrlMapper.insertByBatch(xywyDiseaseUrls);
-		log.info("插入" + xywyDiseaseUrls.size() + "条数据到数据库中");
+		xywySymptomUrlMapper.insertByBatch(XywySymptomUrls);
+		log.info("插入" + XywySymptomUrls.size() + "条数据到数据库中");
 	}
 
 }

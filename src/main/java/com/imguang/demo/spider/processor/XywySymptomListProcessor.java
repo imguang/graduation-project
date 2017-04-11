@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -12,14 +13,15 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+@Component
 public class XywySymptomListProcessor implements PageProcessor {
 
 	private static Logger logger = LoggerFactory.getLogger(XywyDiseaseDetailProcessor.class);
 	private Site site = Site.me().setTimeOut(20000)
 			.setUserAgent(
 					"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36")
-			.setRetryTimes(3).setSleepTime(8000).setCycleRetryTimes(3);
-	private static List<String> symptomlinks = new ArrayList<>();
+			.setRetryTimes(3).setSleepTime(5000).setCycleRetryTimes(3);
+	public static List<String> symptomlinks = new ArrayList<>();
 	private static final String beginUrl = "http://zzk.xywy.com/p/neike.html";
 	
 	@Override
@@ -47,7 +49,7 @@ public class XywySymptomListProcessor implements PageProcessor {
 			page.setSkip(true);
 		} else {
 			List<String> links = page.getHtml().xpath("//div[@class='fl jblist-con-ill']").links().all();
-//			page.putField("links", links);
+			page.putField("links", links);
 			symptomlinks.addAll(links);
 			logger.info("爬取到：" + links.size());
 		}

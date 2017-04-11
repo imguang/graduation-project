@@ -1,4 +1,4 @@
-package com.imguang.demo.model;
+package com.imguang.demo.mysql.model;
 
 public class Pubmed {
     private Integer id;

@@ -9,13 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.imguang.demo.dao.PubmedMapper;
-import com.imguang.demo.dao.XywyDiseaseUrlMapper;
+import com.imguang.demo.mysql.dao.PubmedMapper;
+import com.imguang.demo.mysql.dao.XywyDiseaseUrlMapper;
+import com.imguang.demo.mysql.dao.XywySymptomUrlMapper;
+import com.imguang.demo.neo4j.service.SymptomService;
 import com.imguang.demo.spider.pipeline.PubmedPipeline;
 import com.imguang.demo.spider.pipeline.XywyDiseaseListPipeline;
+import com.imguang.demo.spider.pipeline.XywySymptomListPipeline;
 import com.imguang.demo.spider.processor.PubmedDetailProcessor;
 import com.imguang.demo.spider.processor.PubmedListProcessor;
 import com.imguang.demo.spider.processor.XywyDiseaseListProcessor;
+import com.imguang.demo.spider.processor.XywySymptomListProcessor;
 import com.imguang.demo.spider.scheduler.remover.DoNothingRemover;
 
 import us.codecraft.webmagic.Request;
@@ -36,6 +40,11 @@ public class Procceed {
 	
 	private static XywyDiseaseListPipeline xywyDiseaseListPipeline = null;
 	private static XywyDiseaseListProcessor xywyDiseaseListProcessor = null;
+	private static XywySymptomListProcessor xywySymptomListProcessor = null;
+	private static XywySymptomListPipeline xywySymptomListPipeline = null;
+	private static SymptomService service = null;
+	
+	
 	
 	private static XywyDiseaseUrlMapper xywyDiseaseUrlMapper = null;
 	
@@ -96,15 +105,23 @@ public class Procceed {
 		xywyDiseaseListPipeline = ac.getBean(XywyDiseaseListPipeline.class);
 		xywyDiseaseListProcessor = ac.getBean(XywyDiseaseListProcessor.class);
 		xywyDiseaseUrlMapper = ac.getBean(XywyDiseaseUrlMapper.class);
+		
+		xywySymptomListPipeline = ac.getBean(XywySymptomListPipeline.class);
+		xywySymptomListProcessor = ac.getBean(XywySymptomListProcessor.class);
+		service = ac.getBean(SymptomService.class);
+	}
+	
+	public static void symptomList(){
+		Request beginRequest = new Request();
+		beginRequest.setUrl("http://zzk.xywy.com/p/neike.html");
+		beginRequest.putExtra("flag", 0);
+		Spider.create(xywySymptomListProcessor).addPipeline(xywySymptomListPipeline).addRequest(beginRequest).thread(1).run();
 	}
 	
 	public static void main(String[] args) {
-//		init();
-//		spiderOfList();
-//		//test
-//		spiderOfDetail();
 		init();
-		xywyList();
+		service.deleteAll();
+//		symptomList();
 	}
 
 }

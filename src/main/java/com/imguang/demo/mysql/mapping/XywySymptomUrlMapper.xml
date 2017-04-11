@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.imguang.demo.mysql.dao.XywySymptomUrlMapper" >
+  <resultMap id="BaseResultMap" type="com.imguang.demo.mysql.model.XywySymptomUrl" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from xywy_symptom_url
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByLimit" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select
+  	<include refid="Base_Column_List" />
+    from xywy_symptom_url
+    order by id asc limit #{start,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from xywy_symptom_url
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.imguang.demo.mysql.model.XywySymptomUrl" >
+    insert into xywy_symptom_url (id, url)
+    values (#{id,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertByBatch" parameterType="java.util.List">
+        insert into xywy_symptom_url (url)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.url,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+  <insert id="insertSelective" parameterType="com.imguang.demo.mysql.model.XywySymptomUrl" >
+    insert into xywy_symptom_url
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.imguang.demo.mysql.model.XywySymptomUrl" >
+    update xywy_symptom_url
+    <set >
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.imguang.demo.mysql.model.XywySymptomUrl" >
+    update xywy_symptom_url
+    set url = #{url,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

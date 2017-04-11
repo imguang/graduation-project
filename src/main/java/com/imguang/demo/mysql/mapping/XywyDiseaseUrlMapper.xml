@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.imguang.demo.dao.PubmedMapper" >
-  <resultMap id="BaseResultMap" type="com.imguang.demo.model.Pubmed" >
+<mapper namespace="com.imguang.demo.mysql.dao.XywyDiseaseUrlMapper" >
+  <resultMap id="BaseResultMap" type="com.imguang.demo.mysql.model.XywyDiseaseUrl" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="pubmed_id" property="pubmedId" jdbcType="VARCHAR" />
-    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -65,16 +64,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, pubmed_id, addr
+    id, url
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.imguang.demo.model.PubmedExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrlExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from pubmed
+    from xywy_disease_url
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,67 +84,70 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from pubmed
+    from xywy_disease_url
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from xywy_disease_url
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from pubmed
+    delete from xywy_disease_url
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.imguang.demo.model.PubmedExample" >
-    delete from pubmed
+  <delete id="deleteByExample" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrlExample" >
+    delete from xywy_disease_url
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.imguang.demo.model.Pubmed" >
-    insert into pubmed (id, pubmed_id, addr
-      )
-    values (#{id,jdbcType=INTEGER}, #{pubmedId,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrl" >
+    insert into xywy_disease_url (id, url)
+    values (#{id,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.imguang.demo.model.Pubmed" >
-    insert into pubmed
+   <insert id="insertByBatch" parameterType="java.util.List">
+        insert into xywy_disease_url (url)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.url,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrl" >
+    insert into xywy_disease_url
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="pubmedId != null" >
-        pubmed_id,
-      </if>
-      <if test="addr != null" >
-        addr,
+      <if test="url != null" >
+        url,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="pubmedId != null" >
-        #{pubmedId,jdbcType=VARCHAR},
-      </if>
-      <if test="addr != null" >
-        #{addr,jdbcType=VARCHAR},
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.imguang.demo.model.PubmedExample" resultType="java.lang.Integer" >
-    select count(*) from pubmed
+  <select id="countByExample" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrlExample" resultType="java.lang.Integer" >
+    select count(*) from xywy_disease_url
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update pubmed
+    update xywy_disease_url
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.pubmedId != null" >
-        pubmed_id = #{record.pubmedId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.addr != null" >
-        addr = #{record.addr,jdbcType=VARCHAR},
+      <if test="record.url != null" >
+        url = #{record.url,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -153,30 +155,25 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update pubmed
+    update xywy_disease_url
     set id = #{record.id,jdbcType=INTEGER},
-      pubmed_id = #{record.pubmedId,jdbcType=VARCHAR},
-      addr = #{record.addr,jdbcType=VARCHAR}
+      url = #{record.url,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.imguang.demo.model.Pubmed" >
-    update pubmed
+  <update id="updateByPrimaryKeySelective" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrl" >
+    update xywy_disease_url
     <set >
-      <if test="pubmedId != null" >
-        pubmed_id = #{pubmedId,jdbcType=VARCHAR},
-      </if>
-      <if test="addr != null" >
-        addr = #{addr,jdbcType=VARCHAR},
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.imguang.demo.model.Pubmed" >
-    update pubmed
-    set pubmed_id = #{pubmedId,jdbcType=VARCHAR},
-      addr = #{addr,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.imguang.demo.mysql.model.XywyDiseaseUrl" >
+    update xywy_disease_url
+    set url = #{url,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

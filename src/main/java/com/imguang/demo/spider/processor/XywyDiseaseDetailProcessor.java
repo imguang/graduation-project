@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.imguang.demo.spider.entity.Disease;
+import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.spider.type.DiseaseType;
 
 import us.codecraft.webmagic.Page;
