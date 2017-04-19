@@ -1,6 +1,8 @@
 package com.imguang.demo.mysql.dao;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.imguang.demo.mysql.model.XywyDiseaseUrl;
@@ -20,6 +22,8 @@ public interface XywyDiseaseUrlMapper {
     List<XywyDiseaseUrl> selectByExample(XywyDiseaseUrlExample example);
     
     List<XywyDiseaseUrl> selectAll();
+    
+    List<XywyDiseaseUrl> selectByLimit(Map<String, Integer> map);
 
     XywyDiseaseUrl selectByPrimaryKey(Integer id);
 

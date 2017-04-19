@@ -16,7 +16,11 @@
             <param name="ConversionPattern" value="%d %-5p %l - %m%n"/>  
         </layout>  
     </appender>  
-    <logger name="com.imguang.demo.spider.processor.XywysymptomDetailProcessor">
+    <logger name="com.imguang.demo.spider.Procceed">
+    	<level value="info"/>
+    	<appender-ref ref="fileout" />
+    </logger>
+    <logger name="us.codecraft.webmagic">
     	<level value="info"/>
     	<appender-ref ref="fileout" />
     </logger>

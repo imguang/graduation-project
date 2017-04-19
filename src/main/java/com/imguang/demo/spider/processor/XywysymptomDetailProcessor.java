@@ -27,7 +27,7 @@ import us.codecraft.webmagic.selector.Html;
  * @author 书生 抓取症状简介、原因、预防
  */
 public class XywysymptomDetailProcessor implements PageProcessor {
-	
+
 	private static ApplicationContext ac = null;
 	private static SymptomService service = null;
 	private static XywySymptomUrlMapper xywySymptomUrlMapper = null;
@@ -42,23 +42,22 @@ public class XywysymptomDetailProcessor implements PageProcessor {
 	private void doAbstract(Html html, Symptom symptom) {
 		symptom.setName(html.xpath("//div[@class='jb-name fYaHei gre']/text()").toString());
 		symptom.setAbstractContent(
-				html.xpath("//div[@class='zz-articl fr f14']").toString()
-				.replaceAll("<a.*>分享到</a>", ""));
+				html.xpath("//div[@class='zz-articl fr f14']").toString().replaceAll("<a.*>分享到</a>", ""));
 	}
-	
+
 	/**
 	 * @param html
 	 * @param symptom
-	 * 病因抓取
+	 *            病因抓取
 	 */
 	private void doCause(Html html, Symptom symptom) {
 		symptom.setCause(html.xpath("//div[@class='zz-articl fr f14']").toString());
 	}
-	
+
 	/**
 	 * @param html
 	 * @param symptom
-	 * 预防抓取
+	 *            预防抓取
 	 */
 	private void doPrevent(Html html, Symptom symptom) {
 		symptom.setPrevent(html.xpath("//div[@class='zz-articl fr f14']").toString());
@@ -91,55 +90,60 @@ public class XywysymptomDetailProcessor implements PageProcessor {
 		return SpiderConstant.SITE;
 	}
 
-	private static void init(){
+	private static void init() {
 		ac = new ClassPathXmlApplicationContext("spring-mybatis.xml");
 		service = ac.getBean(SymptomService.class);
 		xywySymptomUrlMapper = ac.getBean(XywySymptomUrlMapper.class);
 	}
-	
+
 	public static void main(String[] args) {
 		init();
-//		//爬取列表
-//		Request beginRequest = new Request();
-//		beginRequest.setUrl("http://zzk.xywy.com/p/neike.html");
-//		beginRequest.putExtra("flag", 0);
-//		Spider ListSpider = Spider.create(new XywySymptomListProcessor()).addRequest(beginRequest).thread(1);
-//		ListSpider.run();
-//		ListSpider.close();
-//		ListSpider = null;		
-//		List<String> symptomlinks = XywySymptomListProcessor.symptomlinks;
-//		log.info("共抓取：" + symptomlinks.size() + "条记录！");
-		Map<String,Integer> map = new HashMap<>();
+		// //爬取列表
+		// Request beginRequest = new Request();
+		// beginRequest.setUrl("http://zzk.xywy.com/p/neike.html");
+		// beginRequest.putExtra("flag", 0);
+		// Spider ListSpider = Spider.create(new
+		// XywySymptomListProcessor()).addRequest(beginRequest).thread(1);
+		// ListSpider.run();
+		// ListSpider.close();
+		// ListSpider = null;
+		// List<String> symptomlinks = XywySymptomListProcessor.symptomlinks;
+		// log.info("共抓取：" + symptomlinks.size() + "条记录！");
+		Map<String, Integer> map = new HashMap<>();
 		map.put("start", 0);
-		map.put("limit", 2000);
+		map.put("limit", 7000);
 		List<XywySymptomUrl> xywySymptomUrls = xywySymptomUrlMapper.selectByLimit(map);
-		//爬取详情
+		log.info(xywySymptomUrls.size() + "");
+		// 爬取详情
 		int cnt = 0;
 		Spider spider = null;
 		List<Symptom> symptoms = null;
-		for (XywySymptomUrl xywySymptomUrl : xywySymptomUrls) {//遍历
+		for (XywySymptomUrl xywySymptomUrl : xywySymptomUrls) {// 遍历
 			String beginUrl = xywySymptomUrl.getUrl();
-			cnt ++;
-			if(cnt % 100 == 1){
-				log.info("第" + cnt + "-" + (cnt + 99) +"条开始爬取！");
+			cnt++;
+			if (cnt % 100 == 1) {
+				log.info("第" + cnt + "-" + (cnt + 99) + "条开始爬取！");
 				spider = Spider.create(new XywysymptomDetailProcessor()).thread(1);
 				symptoms = new ArrayList<>();
 			}
 			String id = beginUrl.substring(20, beginUrl.length() - 12);
-			Symptom symptom = new Symptom();
-			symptom.setId(id);
-			symptoms.add(symptom);
-			for (SymptomType symptomType : SymptomType.values()) {
-				Request request = new Request(symptomType.getUrl().replace("{id}", id));
-				request.putExtra("type", symptomType);
-				request.putExtra("symptom", symptom);
-				spider.addRequest(request);
+			if (service.getSymptomFromId(id) == null) {//数据库中不存在再进行爬取
+				log.info("加入id:" + id);
+				Symptom symptom = new Symptom();
+				symptom.setId(id);
+				symptoms.add(symptom);
+				for (SymptomType symptomType : SymptomType.values()) {
+					Request request = new Request(symptomType.getUrl().replace("{id}", id));
+					request.putExtra("type", symptomType);
+					request.putExtra("symptom", symptom);
+					spider.addRequest(request);
+				}
 			}
-			if(cnt % 100 == 0 || cnt == xywySymptomUrls.size()){
+			if (cnt % 100 == 0 || cnt == xywySymptomUrls.size()) {
 				spider.run();
 				spider.close();
 				spider = null;
-				log.info("爬取进度"+ cnt +"/"+ xywySymptomUrls.size() +"，加入数据库中..");
+				log.info("爬取进度" + cnt + "/" + xywySymptomUrls.size() + "，加入数据库中..");
 				service.saveBatch(symptoms);
 				log.info("加入成功！");
 			}

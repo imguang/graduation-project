@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.imguang.demo.neo4j.entity.Medicine;
 import com.imguang.demo.spider.common.SpiderConstant;
+import com.imguang.demo.utils.StringUtils;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -19,9 +21,10 @@ import us.codecraft.webmagic.selector.Selectable;
  * @author 书生
  * 爬取药物
  */
+@Component
 public class XywyMedcineProcessor implements PageProcessor {
 	
-	private static Logger log = LoggerFactory.getLogger(XywyDiseaseListProcessor.class);
+	private static Logger log = LoggerFactory.getLogger(XywyMedcineProcessor.class);
 
 	@Override
 	public void process(Page page) {
@@ -29,14 +32,14 @@ public class XywyMedcineProcessor implements PageProcessor {
 		//图片
 		medicine.setImgUrl(page.getHtml().xpath("//li[@class='cur']/img").toString());
 		//价格
-		medicine.setPrice(page.getHtml().xpath("//font[@class='font2 fHei']/text()").toString().trim());
+		medicine.setPrice(page.getHtml().xpath("//font[@class='font2 fHei']/text()").toString());
 		List<Selectable> nodes = page.getHtml().xpath("//div[@id='smsList']/ul").nodes();
-		medicine.setName(nodes.get(0).xpath("//li[2]/text()").toString().trim());
+		medicine.setName(StringUtils.trimString(nodes.get(0).xpath("//li[2]/text()").toString()));
 		nodes.remove(0);
 		for (Selectable selectable : nodes) {//各种信息
-			log.info(selectable.toString());
+			log.debug(selectable.toString());
 			String className = selectable.xpath("//li[1]/a/@name").toString();
-			String value = selectable.xpath("//li[2]/text()").toString().trim();
+			String value = selectable.xpath("//li[2]/text()").toString();
 			switch (className) {
 			case "zhuzhi":
 				medicine.setFunction(value);
@@ -70,6 +73,10 @@ public class XywyMedcineProcessor implements PageProcessor {
 		return SpiderConstant.SITE;
 	}
 
+	/**
+	 * @param args
+	 * 测试
+	 */
 	public static void main(String[] args) {
 		String beginUrl = "http://yao.xywy.com/goods/4977.htm";
 		Medicine medicine = new Medicine();
@@ -79,7 +86,7 @@ public class XywyMedcineProcessor implements PageProcessor {
 		Spider spider = Spider.create(new XywyMedcineProcessor()).addRequest(request).thread(1);
 		spider.run();
 		spider.close();
-		log.info(medicine.toString());
+		log.debug(medicine.toString());
 	}
 	
 }

@@ -20,4 +20,11 @@ public class XywyDiseaseUrl {
     public void setUrl(String url) {
         this.url = url;
     }
+
+	@Override
+	public String toString() {
+		return "XywyDiseaseUrl [id=" + id + ", url=" + url + "]";
+	}
+    
+    
 }
