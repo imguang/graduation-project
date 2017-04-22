@@ -155,7 +155,7 @@ public class XywyDiseaseDetailProcessor implements PageProcessor {
 		disease.setNursing(html.xpath("//div[@class='jib-articl fr f14 jib-lh-articl']").toString());
 		logger.debug(disease.toString());
 	}
-
+	
 	/**
 	 * @param page
 	 * @param disease
@@ -166,6 +166,13 @@ public class XywyDiseaseDetailProcessor implements PageProcessor {
 		disease.setTreatmentDetail(html.xpath("//div[@class='jib-lh-articl']").toString());
 		logger.debug(disease.toString());
 	}
+	
+	private void doImg(Page page, Disease disease){
+		Html html = page.getHtml();
+		disease.setImgUrl(html.xpath("//div[@class='jib-articl-imgbox bor fr']/img/@src").toString());
+		logger.info("获得图片URL：" + disease.getImgUrl());
+	}
+	
 
 	public void process(Page page) {
 		Request request = page.getRequest();
@@ -192,6 +199,9 @@ public class XywyDiseaseDetailProcessor implements PageProcessor {
 			break;
 		case TREAT:
 			doTreat(page, disease);
+			break;
+		case IMG:
+			doImg(page, disease);
 			break;
 
 		default:

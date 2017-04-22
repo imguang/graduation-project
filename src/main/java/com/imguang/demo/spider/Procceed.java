@@ -223,6 +223,40 @@ public class Procceed {
 		logger.info("----------------------------------------------------------------------");
 
 	}
+	
+	
+	/**
+	 * 爬取图片URL
+	 * @param start
+	 * @param limit
+	 */
+	public static void diseaseImgUrl(int start, int limit) {
+		Map<String, Integer> map = new HashMap<>();
+		map.put("start", start);
+		map.put("limit", limit);
+		Spider detailSpider = Spider.create(new XywyDiseaseDetailProcessor());
+		diseases = new ArrayList<>();
+		List<XywyDiseaseUrl> xywyDiseaseUrls = xywyDiseaseUrlMapper.selectByLimit(map);
+		logger.info("开始爬取疾病实体(" + xywyDiseaseUrls.size() + "条):" + xywyDiseaseUrls);
+		for (XywyDiseaseUrl xywyDiseaseUrl : xywyDiseaseUrls) {// 对每个链接加入
+			String url = xywyDiseaseUrl.getUrl();
+			String id = url.substring(27, url.length() - 4);
+			Disease disease = diseaseService.getDiseaseFromId(id);
+			if(disease == null || disease.getImgUrl() != null){
+				continue;
+			}
+			diseases.add(disease);
+			Request request = new Request(DiseaseType.IMG.getUrl().replace("{id}", id));
+			request.putExtra("type", DiseaseType.IMG);
+			request.putExtra("disease", disease);
+			detailSpider.addRequest(request);
+		}
+		detailSpider.thread(1).run();
+		detailSpider.close();
+		diseaseService.saveBath(diseases);
+	}
+	
+	
 
 	/**
 	 * 添加疾病和药品关联
@@ -325,16 +359,22 @@ public class Procceed {
 
 	public static void main(String[] args) throws IOException {
 		init();
+//		for(int i=0;i < 97;i ++){
+//			logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");
+//			addDiseaseRelation(i*50, 50);
+//		}
 		for(int i=0;i < 97;i ++){
 			logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");
-			addDiseaseRelation(i*50, 50);
+			diseaseImgUrl(i*50, 50);
 		}
-		FileWriter fileWriter = new FileWriter("F:\\noExists\\disease");
-		for (String string : unExistId) {
-			fileWriter.write(string + "\n");
-			fileWriter.flush();
-		}
-		fileWriter.close();
+		
+		
+//		FileWriter fileWriter = new FileWriter("F:\\noExists\\disease");
+//		for (String string : unExistId) {
+//			fileWriter.write(string + "\n");
+//			fileWriter.flush();
+//		}
+//		fileWriter.close();
 
 		// for(int i=60;i < 97;i ++){
 		// logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");

@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.imguang.spring</groupId>
-	<artifactId>mybaits-generator</artifactId>
+	<artifactId>gproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
-	<name>mybaits-generator</name>
+	<name>my-graduation-project</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -20,6 +20,7 @@
 		<slf4j.version>1.7.7</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
 		<mysqlConnector.version>5.1.30</mysqlConnector.version>
+		<fasterxml.jackson.version>2.8.7</fasterxml.jackson.version>
 	</properties>
 
 	<dependencies>
@@ -92,6 +93,11 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.5.4</version>
+		</dependency>
 
 		<!-- mybatis核心包 -->
 		<dependency>
@@ -143,26 +149,55 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
 		</dependency>
-		<!-- 上传组件包 -->
+
+		<!-- JSON Start -->
 		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.3.1</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.7.3</version>
+			<version>${fasterxml.jackson.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate5</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<!-- JSON End -->
+
 		<dependency>
 			<groupId>org.apdplat</groupId>
 			<artifactId>word</artifactId>
 			<version>1.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.ansj/ansj_seg -->
 		<dependency>
@@ -188,6 +223,20 @@
 			<groupId>org.neo4j.app</groupId>
 			<artifactId>neo4j-server</artifactId>
 			<version>2.3.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-access</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
@@ -216,41 +265,22 @@
 
 	<build>
 		<plugins>
-			<!-- mybatis自动生成 -->
 			<plugin>
-				<groupId>org.mybatis.generator</groupId>
-				<artifactId>mybatis-generator-maven-plugin</artifactId>
-				<version>1.3.3</version>
-				<executions>
-					<execution>
-						<id>Generate MyBatis Artifacts</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
-					<verbose>true</verbose>
-					<overwrite>true</overwrite>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-						<version>${mysqlConnector.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.mybatis.generator</groupId>
-						<artifactId>mybatis-generator-core</artifactId>
-						<version>1.3.2</version>
-					</dependency>
-					<dependency>
-						<groupId>org.mybatis</groupId>
-						<artifactId>mybatis</artifactId>
-						<version>${mybatis.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -275,20 +305,7 @@
 										<ignore />
 									</action>
 								</pluginExecution>
-								<!-- mybatis-generator-plugin -->
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.mybatis.generator</groupId>
-										<artifactId>mybatis-generator-maven-plugin</artifactId>
-										<versionRange>[1.3.2,)</versionRange>
-										<goals>
-											<goal>generate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
+						
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>

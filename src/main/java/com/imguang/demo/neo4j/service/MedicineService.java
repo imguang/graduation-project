@@ -28,6 +28,11 @@ public class MedicineService {
 		return medicineRepository.getMedicineFromId(id);
 	}
 	
+	public Medicine getMedicineFromGraphId(Long id){
+		return medicineRepository.findOne(id);
+	}
+	
+	
 	public List<Medicine> getAll(){
 		return (List<Medicine>) medicineRepository.findAll();
 	}

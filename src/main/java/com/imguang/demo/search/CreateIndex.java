@@ -76,6 +76,7 @@ public class CreateIndex {
 		addMedicine();
 		addSymptom();
 		indexWriter.close();
+		analyzer.close();
 	}
 	
 	/**
@@ -111,6 +112,7 @@ public class CreateIndex {
 			// logger.info("treatement_detail:" + disease.getTreatmentDetail());
 			Document document = new Document();
 			document.add(new TextField("name", disease.getDiseaseName(), Store.YES));
+			document.add(new TextField("graphId", String.valueOf(disease.getGraphId()), Store.YES));
 			document.add(new TextField("id", disease.getId(), Store.YES));
 			if (disease.getAbstractContent() != null && !"".equals(disease.getAbstractContent()))
 				document.add(new TextField("abstract_content", disease.getAbstractContent(), Store.NO));
@@ -161,6 +163,7 @@ public class CreateIndex {
 			if (medicine.getName() == null) {
 				logger.info(medicine.toString());
 			}
+			document.add(new TextField("graphId", String.valueOf(medicine.getGraphId()), Store.YES));
 			document.add(new TextField("name", medicine.getName(), Store.YES));
 			document.add(new TextField("id", medicine.getId(), Store.YES));
 			if (medicine.getFunction() != null)
@@ -203,6 +206,7 @@ public class CreateIndex {
 			cnt++;
 			logger.info("正在添加第" + cnt + "条。id:" + symptom.getId());
 			Document document = new Document();
+			document.add(new TextField("graphId", String.valueOf(symptom.getGraphId()), Store.YES));
 			document.add(new TextField("name", symptom.getName(), Store.YES));
 			document.add(new TextField("id", symptom.getId(), Store.YES));
 			if (symptom.getAbstractContent() != null)

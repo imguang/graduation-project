@@ -28,6 +28,15 @@ public class Disease {
 	private String treatmentCost;
 	private String nursing;
 	private String prevent;
+	private String imgUrl;
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
 
 	@Relationship(type="disease-medicine",direction=Relationship.UNDIRECTED)
 	private Set<Medicine> medicines;

@@ -30,6 +30,12 @@ public class DiseaseService {
 		return diseaseRepository.getDiseaseFromId(id);
 	}
 	
+	public Disease getDiseaseAndRelationFromId(String id){
+		Disease disease = diseaseRepository.getDiseaseFromId(id);
+		Long graphId =  disease.getGraphId();
+		return diseaseRepository.findOne(graphId);
+	}
+	
 	public List<Disease> getAll(){
 		return (List<Disease>) diseaseRepository.findAll();
 	}
@@ -37,5 +43,9 @@ public class DiseaseService {
 	public Page<Disease> getByPage(Pageable pageable){
 		Page<Disease> rePage = diseaseRepository.findAll(pageable);
 		return rePage;
+	}
+	
+	public List<Disease> getDiseaseFromMedicineId(String id){
+		return diseaseRepository.getDiseaseFromMedicineId(id);
 	}
 }

@@ -1,7 +1,10 @@
 package com.imguang.demo.neo4j.entity;
 
+import java.util.Set;
+
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
 public class Symptom {
@@ -13,6 +16,26 @@ public class Symptom {
 	private String abstractContent;
 	private String cause;
 	private String prevent;
+	private String imgUrl;
+	
+	@Relationship(type="disease-medicine",direction=Relationship.UNDIRECTED)
+	private Set<Disease> diseases;
+
+	public Set<Disease> getDiseases() {
+		return diseases;
+	}
+
+	public void setDiseases(Set<Disease> diseases) {
+		this.diseases = diseases;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
 
 	public Long getGraphId() {
 		return graphId;

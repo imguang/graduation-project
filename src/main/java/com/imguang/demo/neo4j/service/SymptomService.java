@@ -33,6 +33,10 @@ public class SymptomService {
 		return symptomRepository.getSymptomFromId(id);
 	}
 	
+	public Symptom getSymptomFromGraphId(Long id){
+		return symptomRepository.findOne(id);
+	}
+	
 	public List<Symptom> getAll(){
 		return (List<Symptom>) symptomRepository.findAll();
 	}

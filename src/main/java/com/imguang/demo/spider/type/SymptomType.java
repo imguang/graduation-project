@@ -10,7 +10,8 @@ public enum SymptomType {
 	//http://zzk.xywy.com/5513_yufang.html
 	ABSTRACTS("http://zzk.xywy.com/{id}_jieshao.html"),
 	CAUSE("http://zzk.xywy.com/{id}_yuanyin.html"),
-	PREVENT("http://zzk.xywy.com/{id}_yufang.html");
+	PREVENT("http://zzk.xywy.com/{id}_yufang.html"),
+	IMG("http://zzk.xywy.com/{id}_gaishu.html");
 	
 	String url;
 	SymptomType(String url){

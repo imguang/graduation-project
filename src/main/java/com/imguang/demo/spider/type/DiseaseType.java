@@ -13,7 +13,9 @@ public enum DiseaseType {
 	NEOPATHY("http://jib.xywy.com/il_sii/neopathy/{id}.htm"),
 	SYMPTOM("http://jib.xywy.com/il_sii/symptom/{id}.htm"),
 	TREAT("http://jib.xywy.com/il_sii/treat/{id}.htm"),
-	NURSING("http://jib.xywy.com/il_sii/nursing/{id}.htm");
+	NURSING("http://jib.xywy.com/il_sii/nursing/{id}.htm"),
+	IMG("http://jib.xywy.com/il_sii_{id}.htm");
+	
 	String url ;
 	DiseaseType(String url){
 		this.url = url;
