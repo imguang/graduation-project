@@ -30,10 +30,8 @@ public class DiseaseService {
 		return diseaseRepository.getDiseaseFromId(id);
 	}
 	
-	public Disease getDiseaseAndRelationFromId(String id){
-		Disease disease = diseaseRepository.getDiseaseFromId(id);
-		Long graphId =  disease.getGraphId();
-		return diseaseRepository.findOne(graphId);
+	public Disease getDiseaseFromGraphId(Long id){
+		return diseaseRepository.findOne(id);
 	}
 	
 	public List<Disease> getAll(){

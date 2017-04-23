@@ -1,7 +1,10 @@
 package com.imguang.demo.web.controller.vo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Symptom;
 
 public class SymptomSearchResultVO extends BaseSearchResultVO {
@@ -13,6 +16,11 @@ public class SymptomSearchResultVO extends BaseSearchResultVO {
 	private String cause;
 	private String prevent;
 	private String imgUrl;
+	
+	public SymptomSearchResultVO() {
+		super();
+		super.setFlag(BaseSearchResultVO.SYMPTOM);
+	}
 	
 	public Long getGraphId() {
 		return graphId;
@@ -65,6 +73,18 @@ public class SymptomSearchResultVO extends BaseSearchResultVO {
 		this.cause = symptom.getCause();
 		this.prevent = symptom.getPrevent();
 		this.imgUrl = symptom.getImgUrl();
+		super.setDiseaseRelations(new ArrayList<>());
+		Set<Disease> diseases = symptom.getDiseases();
+		if(diseases != null){
+			for (Disease disease : diseases) {
+				BaseEntity baseEntity = new BaseEntity();
+				super.getDiseaseRelations().add(baseEntity);
+				baseEntity.setGraphId(disease.getGraphId());
+				baseEntity.setId(disease.getId());
+				baseEntity.setImgUrl(disease.getImgUrl());
+				baseEntity.setName(disease.getDiseaseName());
+			}
+		}
 	}
 	
 	public void setSymptom(Symptom symptom,List<BaseEntity> diseases){

@@ -2,7 +2,7 @@ package com.imguang.demo.search.entity;
 
 import org.apache.lucene.document.Document;
 
-public class HitsEntity {
+public class HitsEntity implements Comparable<HitsEntity>{
 
 	private String id;
 	private Long graphId;
@@ -99,6 +99,15 @@ public class HitsEntity {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(HitsEntity o) {
+		if(o.getScore() > this.getScore())
+			return 1;
+		if(o.getScore() < this.getScore())
+			return -1;
+		return 0;
 	}
 	
 }

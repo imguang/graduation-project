@@ -27,6 +27,11 @@ public class DiseaseSearchResultVO extends BaseSearchResultVO {
 	private String nursing;
 	private String prevent;
 	private String imgUrl;
+	
+	public DiseaseSearchResultVO() {
+		super();
+		super.setFlag(BaseSearchResultVO.DISEASE);
+	}
 	public Long getGraphId() {
 		return graphId;
 	}

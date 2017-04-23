@@ -3,10 +3,21 @@ package com.imguang.demo.web.controller.vo;
 import java.util.List;
 
 public class BaseSearchResultVO {
+	private String flag;
 	private List<String> searchRelations;
 	private List<BaseEntity> diseaseRelations;
 	private List<BaseEntity> symptomRelations;
 	private List<BaseEntity> medicineRelations;
+	public static final String DISEASE = "disease";
+	public static final String SYMPTOM = "symptom";
+	public static final String MEDICINE = "medicine";
+	
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 	public List<String> getSearchRelations() {
 		return searchRelations;
 	}

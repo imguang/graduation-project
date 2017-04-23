@@ -3,7 +3,9 @@ package com.imguang.demo.search;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -19,8 +21,6 @@ import org.apdplat.word.lucene.ChineseWordAnalyzer;
 
 import com.imguang.demo.search.entity.HitsEntity;
 
-import scala.collection.immutable.ListMap;
-
 public class QueryUtil {
 
 	public static final String CONTENT = "content";
@@ -32,6 +32,10 @@ public class QueryUtil {
 	private static Directory directory = null;
 	private static IndexSearcher indexSearcher = null;
 	private static DirectoryReader directoryReader = null;
+	private static Map<String, QueryParser> queryParserMap ;
+	private static final String[] properties = { "name","abstract_content", "etiology", "treatment_detail", "prevent",
+			"nursing", "function", "conponent", "cause" };
+
 
 	public void init() {
 		analyzer = new ChineseWordAnalyzer();
@@ -42,6 +46,10 @@ public class QueryUtil {
 			e.printStackTrace();
 		}
 		indexSearcher = new IndexSearcher(directoryReader);
+		queryParserMap = new HashMap<>();
+		for (String string : properties) {
+			queryParserMap.put(string, new QueryParser(string, analyzer));
+		}
 	}
 
 	public void destroy() {
@@ -59,7 +67,7 @@ public class QueryUtil {
 
 	public List<HitsEntity> searchByPropertiesNameAndValue(String properties, String term)
 			throws IOException, ParseException {
-		QueryParser queryParser = new QueryParser(properties, analyzer);
+		QueryParser queryParser = queryParserMap.get(properties);
 		Query query = queryParser.parse(term);
 		ScoreDoc[] hits = indexSearcher.search(query, 10).scoreDocs;
 		List<HitsEntity> hitsEntities = new ArrayList<>();

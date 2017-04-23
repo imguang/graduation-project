@@ -34,7 +34,7 @@ public class MedicineServiceTest extends BaseJunit4Test{
 	@Ignore
 	public void getMedicineService(){
 		Long start = System.currentTimeMillis();
-		Disease disease = diseaseService.getDiseaseAndRelationFromId("2384");
+		Disease disease = diseaseService.getDiseaseFromGraphId(new Long(2384));
 		System.out.println(System.currentTimeMillis() - start);
 		DiseaseSearchResultVO baseDiseaseSearchResultVO = new DiseaseSearchResultVO();
 		baseDiseaseSearchResultVO.setDisease(disease);
@@ -49,6 +49,7 @@ public class MedicineServiceTest extends BaseJunit4Test{
 	}
 	
 	@Test
+	@Ignore
 	public void findMedicineTest() throws IOException, ParseException{
 		Medicine medicine = medicineService.getMedicineFromGraphId(new Long(6852));
 		System.out.println(medicine.getName());

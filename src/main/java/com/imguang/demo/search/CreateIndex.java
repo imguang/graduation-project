@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.ansj.lucene5.AnsjAnalyzer;
-import org.ansj.lucene5.AnsjAnalyzer.TYPE;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.document.Field.Store;
@@ -40,7 +37,6 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 /**
  * @author 书生 Lucene 生成索引
  */
-@Component
 public class CreateIndex {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateIndex.class);

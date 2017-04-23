@@ -1,8 +1,13 @@
 package com.imguang.demo.web.controller.vo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Medicine;
+
+import scala.collection.immutable.HashSet;
 
 public class MedicineSearchResultVO extends BaseSearchResultVO {
 
@@ -19,6 +24,11 @@ public class MedicineSearchResultVO extends BaseSearchResultVO {
 	private String price;
 	private String imgUrl;
 
+	public MedicineSearchResultVO() {
+		super();
+		super.setFlag(BaseSearchResultVO.MEDICINE);
+	}
+	
 	public Long getGraphId() {
 		return graphId;
 	}
@@ -128,6 +138,18 @@ public class MedicineSearchResultVO extends BaseSearchResultVO {
 		this.conponent = medicine.getConponent();
 		this.interaction = medicine.getInteraction();
 		this.price = medicine.getPrice();
+		super.setDiseaseRelations(new ArrayList<>());
+		Set<Disease> diseases = medicine.getDiseases();
+		if(diseases != null){
+			for (Disease disease : diseases) {
+				BaseEntity baseEntity = new BaseEntity();
+				super.getDiseaseRelations().add(baseEntity);
+				baseEntity.setGraphId(disease.getGraphId());
+				baseEntity.setId(disease.getId());
+				baseEntity.setImgUrl(disease.getImgUrl());
+				baseEntity.setName(disease.getDiseaseName());
+			}
+		}
 	}
 
 	public void setMedicine(Medicine medicine, List<BaseEntity> diseases) {
