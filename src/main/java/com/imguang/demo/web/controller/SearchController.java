@@ -1,6 +1,5 @@
 package com.imguang.demo.web.controller;
 
-
 import java.io.IOException;
 
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -10,28 +9,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.imguang.demo.neo4j.service.DiseaseService;
+import com.imguang.demo.web.common.controller.BaseController;
 import com.imguang.demo.web.common.vo.Response;
 import com.imguang.demo.web.controller.vo.BaseSearchResultVO;
 import com.imguang.demo.web.service.LuceneQueryService;
 
 @Controller
-@RequestMapping("/test")
-public class Test {
-	
-	@Autowired
-	DiseaseService diseaseService;
+@RequestMapping("/search")
+public class SearchController extends BaseController{
 	
 	@Autowired
 	LuceneQueryService luceneQueryService;
-	
+
+	/**
+	 * 关键词搜索
+	 * @param words
+	 * @return
+	 * @throws ParseException 
+	 * @throws IOException 
+	 */
 	@ResponseBody
-	@RequestMapping("/a")
-	public Response test(@RequestParam("name")String name) throws IOException, ParseException{
+	@RequestMapping("/item")
+	public Response searchItem(@RequestParam("words")String words) throws IOException, ParseException{
 		Long start = System.currentTimeMillis();
 		System.out.println(System.currentTimeMillis() - start);
-		System.out.println(name);
-		BaseSearchResultVO basesearchResult = luceneQueryService.queryByTerm(name);
+		System.out.println(words);
+		BaseSearchResultVO basesearchResult = luceneQueryService.queryByTerm(words);
 		System.out.println(System.currentTimeMillis() - start);
 		return new Response().success(basesearchResult);
 	}

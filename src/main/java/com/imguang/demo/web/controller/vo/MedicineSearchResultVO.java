@@ -7,8 +7,6 @@ import java.util.Set;
 import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Medicine;
 
-import scala.collection.immutable.HashSet;
-
 public class MedicineSearchResultVO extends BaseSearchResultVO {
 
 	private Long graphId;
