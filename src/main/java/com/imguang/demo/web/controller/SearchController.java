@@ -13,6 +13,8 @@ import com.imguang.demo.web.common.controller.BaseController;
 import com.imguang.demo.web.common.vo.Response;
 import com.imguang.demo.web.controller.vo.BaseSearchResultVO;
 import com.imguang.demo.web.service.LuceneQueryService;
+import com.imguang.demo.web.service.PaperQueryService;
+import com.imguang.demo.web.service.SplitWordsService;
 
 @Controller
 @RequestMapping("/search")
@@ -20,6 +22,12 @@ public class SearchController extends BaseController{
 	
 	@Autowired
 	LuceneQueryService luceneQueryService;
+	
+	@Autowired
+	PaperQueryService paperQueryService;
+	
+	@Autowired
+	SplitWordsService splitWordsService;
 
 	/**
 	 * 关键词搜索
@@ -35,6 +43,8 @@ public class SearchController extends BaseController{
 		System.out.println(System.currentTimeMillis() - start);
 		System.out.println(words);
 		BaseSearchResultVO basesearchResult = luceneQueryService.queryByTerm(words);
+		basesearchResult.setPapers(paperQueryService.queryByItem(words));
+		basesearchResult.setWords(splitWordsService.splitResult(words));
 		System.out.println(System.currentTimeMillis() - start);
 		return new Response().success(basesearchResult);
 	}

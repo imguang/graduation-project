@@ -60,11 +60,15 @@ public class HitsEntity implements Comparable<HitsEntity>{
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
+	
+	
+	
 	@Override
 	public String toString() {
-		return "HitsEntity [id=" + id + ", graphId=" + graphId + ", name=" + name + ", flag=" + flag + ", score="
+		return "\nHitsEntity [\nid=" + id + "\ngraphId=" + graphId + "\nname=" + name + "\nflag=" + flag + "\nscore="
 				+ score + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

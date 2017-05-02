@@ -1,5 +1,7 @@
 package com.imguang.demo.search;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -12,6 +14,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.LongField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -28,15 +32,17 @@ import org.springframework.stereotype.Component;
 
 import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Medicine;
+import com.imguang.demo.neo4j.entity.Paper;
 import com.imguang.demo.neo4j.entity.Symptom;
 import com.imguang.demo.neo4j.service.DiseaseService;
 import com.imguang.demo.neo4j.service.MedicineService;
+import com.imguang.demo.neo4j.service.PaperService;
 import com.imguang.demo.neo4j.service.SymptomService;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 /**
  * @author 书生 Lucene 生成索引
  */
+@Component
 public class CreateIndex {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateIndex.class);
@@ -54,44 +60,92 @@ public class CreateIndex {
 	@Autowired
 	private SymptomService symptomService;
 
+	@Autowired
+	private PaperService paperService;
+
 	public CreateIndex() throws IOException {
 		File indexFile = new File(LuceneConst.INDEX_DIR);
 		if (!indexFile.exists()) {
 			indexFile.mkdirs();
 		}
 		directory = FSDirectory.open(indexFile.toPath());
-//		analyzer = new AnsjAnalyzer(TYPE.index_ansj);
-//		analyzer = new StandardAnalyzer();
+		// analyzer = new AnsjAnalyzer(TYPE.index_ansj);
+		// analyzer = new StandardAnalyzer();
 		analyzer = new ChineseWordAnalyzer();
 		indexWriterConfig = new IndexWriterConfig(analyzer);
 		indexWriter = new IndexWriter(directory, indexWriterConfig);
 	}
 
-	public void addAll() throws IOException{
+	public void addAll() throws IOException {
 		addDisease();
 		addMedicine();
 		addSymptom();
 		indexWriter.close();
 		analyzer.close();
 	}
+
+	public void addPaper() throws IOException {
+		addPaper(paperService.getAll());
+	}
+
 	
 	/**
+	 * @param name
+	 * @param text
+	 * @param boost
+	 * @return
+	 */
+	private TextField getTextField(String name,String text,float boost){
+		return getTextField(name, text, boost,Store.NO);
+	}
+	private TextField getTextField(String name,String text,float boost,Store store){
+		TextField textField = new TextField(name, text,store);
+		textField.setBoost(boost);
+		return textField;
+	}
+	
+	
+	public void addPaper(List<Paper> papers) throws IOException {
+		int cnt = 0;
+		for (Paper paper : papers) {
+			//时间衰减权重
+			float timeFactor = (float) Math.pow(LuceneConst.TIME_BASE,
+					(LuceneConst.TIME_NOW - paper.getPublishYear()) / LuceneConst.TIME_B);
+			cnt++;
+			logger.info("正在添加第" + cnt + "条。factor:" + timeFactor);
+			Document document = new Document();
+			document.add(getTextField("paper_title", paper.getTitle(), timeFactor));
+			document.add(getTextField("paper_abstract", paper.getAbstracts(), timeFactor * 0.8f));
+			document.add(getTextField("paper_author", paper.getAuthor(), timeFactor));
+			document.add(getTextField("paper_keywords", paper.getKeyWords(), timeFactor));
+			document.add(getTextField("paper_publisher", paper.getPublisher(), timeFactor));
+			document.add(new IntField("paper_year", paper.getPublishYear(), Store.YES));
+			document.add(new LongField("Id", paper.getGraphId(), Store.YES));
+			indexWriter.addDocument(document);
+		}
+		indexWriter.close();
+		analyzer.close();
+		directory.close();
+	}
+
+	/**
 	 * 分页加入疾病实体
+	 * 
 	 * @throws IOException
 	 */
-	private void addDisease() throws IOException{
+	private void addDisease() throws IOException {
 		Pageable pageable = new PageRequest(0, 100, Sort.Direction.ASC, "id");
 		Page<Disease> rePage = diseaseService.getByPage(pageable);
-		while(true){
+		while (true) {
 			addDisease(rePage.getContent());
-			if(!rePage.hasNext()){
+			if (!rePage.hasNext()) {
 				break;
 			}
 			pageable = pageable.next();
 			rePage = diseaseService.getByPage(pageable);
 		}
 	}
-	
+
 	/**
 	 * 加入疾病索引
 	 * 
@@ -99,7 +153,7 @@ public class CreateIndex {
 	 * @throws IOException
 	 */
 	private void addDisease(List<Disease> diseases) throws IOException {
-		
+
 		logger.info("添加" + diseases.size() + "条");
 		int cnt = 0;
 		for (Disease disease : diseases) {
@@ -107,35 +161,36 @@ public class CreateIndex {
 			logger.info("正在添加第" + cnt + "条。");
 			// logger.info("treatement_detail:" + disease.getTreatmentDetail());
 			Document document = new Document();
-			document.add(new TextField("name", disease.getDiseaseName(), Store.YES));
+			document.add(getTextField("name", disease.getDiseaseName(), 1.0f,Store.YES));
 			document.add(new TextField("graphId", String.valueOf(disease.getGraphId()), Store.YES));
 			document.add(new TextField("id", disease.getId(), Store.YES));
 			if (disease.getAbstractContent() != null && !"".equals(disease.getAbstractContent()))
-				document.add(new TextField("abstract_content", disease.getAbstractContent(), Store.NO));
+				document.add(getTextField("abstract_content", disease.getAbstractContent(), 0.8f));
 			if (disease.getEtiology() != null && !"".equals(disease.getEtiology()))
-				document.add(new TextField("etiology", disease.getEtiology(), Store.NO));
+				document.add(getTextField("etiology", disease.getEtiology(), 0.8f));
 			if (disease.getTreatmentDetail() != null && !"".equals(disease.getTreatmentDetail()))
-				document.add(new TextField("treatment_detail", disease.getTreatmentDetail(), Store.NO));
+				document.add(getTextField("treatment_detail", disease.getTreatmentDetail(),0.8f));
 			if (disease.getPrevent() != null && !"".equals(disease.getPrevent()))
-				document.add(new TextField("prevent", disease.getPrevent(), Store.NO));
+				document.add(getTextField("prevent", disease.getPrevent(), 0.8f));
 			if (disease.getNursing() != null && !"".equals(disease.getNursing()))
-				document.add(new TextField("nursing", disease.getNursing(), Store.NO));
+				document.add(getTextField("nursing", disease.getNursing(), 0.8f));
 			document.add(new TextField("flag", "disease", Store.YES));
 			indexWriter.addDocument(document);
 		}
 		logger.info("添加成功");
 	}
-	
+
 	/**
 	 * 分页加入药物索引
+	 * 
 	 * @throws IOException
 	 */
-	private void addMedicine() throws IOException{
+	private void addMedicine() throws IOException {
 		Pageable pageable = new PageRequest(0, 100, Sort.Direction.ASC, "id");
 		Page<Medicine> rePage = medicineService.getByPage(pageable);
-		while(true){
+		while (true) {
 			addMedicine(rePage.getContent());
-			if(!rePage.hasNext()){
+			if (!rePage.hasNext()) {
 				break;
 			}
 			pageable = pageable.next();
@@ -160,12 +215,12 @@ public class CreateIndex {
 				logger.info(medicine.toString());
 			}
 			document.add(new TextField("graphId", String.valueOf(medicine.getGraphId()), Store.YES));
-			document.add(new TextField("name", medicine.getName(), Store.YES));
+			document.add(getTextField("name", medicine.getName(), 1.0f,Store.YES));
 			document.add(new TextField("id", medicine.getId(), Store.YES));
 			if (medicine.getFunction() != null)
-				document.add(new TextField("function", medicine.getFunction(), Store.NO));
+				document.add(getTextField("function", medicine.getFunction(), 0.8f));
 			if (medicine.getConponent() != null)
-				document.add(new TextField("conponent", medicine.getConponent(), Store.NO));
+				document.add(getTextField("conponent", medicine.getConponent(), 0.8f));
 			document.add(new TextField("flag", "medicine", Store.YES));
 			indexWriter.addDocument(document);
 		}
@@ -174,21 +229,22 @@ public class CreateIndex {
 
 	/**
 	 * 分页加入symptom索引
+	 * 
 	 * @throws IOException
 	 */
-	private void addSymptom() throws IOException{
+	private void addSymptom() throws IOException {
 		Pageable pageable = new PageRequest(0, 100, Sort.Direction.ASC, "id");
 		Page<Symptom> rePage = symptomService.getByPage(pageable);
-		while(true){
+		while (true) {
 			addSymptom(rePage.getContent());
-			if(!rePage.hasNext()){
+			if (!rePage.hasNext()) {
 				break;
 			}
 			pageable = pageable.next();
 			rePage = symptomService.getByPage(pageable);
 		}
 	}
-	
+
 	/**
 	 * 加入症状索引
 	 * 
@@ -203,16 +259,16 @@ public class CreateIndex {
 			logger.info("正在添加第" + cnt + "条。id:" + symptom.getId());
 			Document document = new Document();
 			document.add(new TextField("graphId", String.valueOf(symptom.getGraphId()), Store.YES));
-			document.add(new TextField("name", symptom.getName(), Store.YES));
+			document.add(getTextField("name", symptom.getName(), 1.0f,Store.YES));
 			document.add(new TextField("id", symptom.getId(), Store.YES));
 			if (symptom.getAbstractContent() != null)
-				document.add(new TextField("abstract_content", symptom.getAbstractContent(), Store.NO));
+				document.add(getTextField("abstract_content", symptom.getAbstractContent(),0.8f));
 			if (symptom.getCause() != null)
-				document.add(new TextField("cause", symptom.getCause(), Store.NO));
+				document.add(getTextField("cause", symptom.getCause(), 0.8f));
 			if (symptom.getPrevent() != null)
-				document.add(new TextField("pervent", symptom.getPrevent(), Store.NO));
+				document.add(getTextField("pervent", symptom.getPrevent(), 0.8f));
 			document.add(new TextField("flag", "symptom", Store.YES));
-//			logger.info(document.toString());
+			// logger.info(document.toString());
 			indexWriter.addDocument(document);
 		}
 		logger.info("添加成功");

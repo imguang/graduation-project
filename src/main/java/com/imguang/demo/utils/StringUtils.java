@@ -14,4 +14,16 @@ public class StringUtils {
 		return tem.trim();
 	}
 	
+	
+	/**
+	 * string转为Int
+	 * @param tem
+	 * @return
+	 */
+	public static Integer parseInt(String tem){
+		if(tem == null || "".equals(tem)){
+			return null;
+		}
+		return Integer.valueOf(tem);
+	}
 }

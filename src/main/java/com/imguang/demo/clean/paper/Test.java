@@ -1,7 +1,14 @@
 package com.imguang.demo.clean.paper;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.imguang.demo.clean.paper.formatter.IPaperFormatter;
 import com.imguang.demo.clean.paper.formatter.impl.CnkiPaperFormatterImpl;
@@ -28,8 +35,10 @@ public class Test {
 		System.out.println(wanFangPaperFormatter.doFormat(urlPath));*/
 		init();
 //		String urlPath = "F:\\gProject\\data\\cnki\\CNKI_01.xml";
-		String urlPath = "C:\\Users\\书生\\Desktop\\毕设\\WOS\\data\\download_1.txt";
-		List<TemPaper> temPapers = paperFormatter.doFormat(urlPath);
+		String urlPath = "C:\\Users\\书生\\Desktop\\论文\\download_生长受限_01";
+//		List<TemPaper> temPapers = paperFormatter.doFormat(urlPath);
+		
+		
 		/*int cnt = 0;
 		for (TemPaper temPaper : temPapers) {
 			List<String> DOIs = temPaper.getCitedReferenceIds();

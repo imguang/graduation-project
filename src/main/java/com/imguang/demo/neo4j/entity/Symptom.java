@@ -18,7 +18,7 @@ public class Symptom {
 	private String prevent;
 	private String imgUrl;
 	
-	@Relationship(type="disease-medicine",direction=Relationship.UNDIRECTED)
+	@Relationship(type="disease-symptom",direction=Relationship.UNDIRECTED)
 	private Set<Disease> diseases;
 
 	public Set<Disease> getDiseases() {

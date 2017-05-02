@@ -146,9 +146,10 @@ public class LuceneQueryService {
 		//排序
 		Collections.sort(hitsPropertiesEntity);
 		log.info("查询完毕：" + hitsPropertiesEntity);
-		baseSearchResultVO = getFlagEntity(hitsPropertiesEntity.get(0));
-		baseSearchResultVO.setSearchRelations(getSearchRelations(hitsPropertiesEntity));
-		
+		if(hitsPropertiesEntity.size() > 0){
+			baseSearchResultVO = getFlagEntity(hitsPropertiesEntity.get(0));
+			baseSearchResultVO.setSearchRelations(getSearchRelations(hitsPropertiesEntity));
+		}
 		return baseSearchResultVO;
 
 	}

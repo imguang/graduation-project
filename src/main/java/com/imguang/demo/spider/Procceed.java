@@ -20,9 +20,11 @@ import com.imguang.demo.mysql.dao.XywyDiseaseUrlMapper;
 import com.imguang.demo.mysql.model.XywyDiseaseUrl;
 import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Medicine;
+import com.imguang.demo.neo4j.entity.Paper;
 import com.imguang.demo.neo4j.entity.Symptom;
 import com.imguang.demo.neo4j.service.DiseaseService;
 import com.imguang.demo.neo4j.service.MedicineService;
+import com.imguang.demo.neo4j.service.PaperService;
 import com.imguang.demo.neo4j.service.SymptomService;
 import com.imguang.demo.spider.pipeline.PubmedPipeline;
 import com.imguang.demo.spider.pipeline.XywyDiseaseListPipeline;
@@ -60,6 +62,7 @@ public class Procceed {
 	private static SymptomService symptomService = null;
 	private static MedicineService medicineService = null;
 	private static DiseaseService diseaseService = null;
+	private static PaperService paperService = null;
 
 	private static XywyDiseaseUrlMapper xywyDiseaseUrlMapper = null;
 
@@ -127,6 +130,7 @@ public class Procceed {
 		medicineService = ac.getBean(MedicineService.class);
 		diseaseService = ac.getBean(DiseaseService.class);
 		xywyMedcineProcessor = ac.getBean(XywyMedcineProcessor.class);
+		paperService = ac.getBean(PaperService.class);
 	}
 
 	public static void symptomList() {// 症状列表爬取
@@ -363,10 +367,10 @@ public class Procceed {
 //			logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");
 //			addDiseaseRelation(i*50, 50);
 //		}
-		for(int i=0;i < 97;i ++){
-			logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");
-			diseaseImgUrl(i*50, 50);
-		}
+//		for(int i=0;i < 97;i ++){
+//			logger.info("开始爬取第" + (i * 50 + 1) + "-" + (i * 50 + 50) + "条");
+//			diseaseImgUrl(i*50, 50);
+//		}
 		
 		
 //		FileWriter fileWriter = new FileWriter("F:\\noExists\\disease");

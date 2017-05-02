@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -32,10 +33,11 @@ public class QueryUtil {
 	private static Directory directory = null;
 	private static IndexSearcher indexSearcher = null;
 	private static DirectoryReader directoryReader = null;
-	private static Map<String, QueryParser> queryParserMap ;
-	private static final String[] properties = { "name","abstract_content", "etiology", "treatment_detail", "prevent",
+	private static Map<String, QueryParser> queryParserMap;
+	private static final String[] properties = { "name", "abstract_content", "etiology", "treatment_detail", "prevent",
 			"nursing", "function", "conponent", "cause" };
-
+	private static final String[] paperField = { "paper_title", "paper_abstract", "paper_author", "paper_keywords",
+			"paper_publisher", "paper_year" };
 
 	public void init() {
 		analyzer = new ChineseWordAnalyzer();
@@ -50,6 +52,7 @@ public class QueryUtil {
 		for (String string : properties) {
 			queryParserMap.put(string, new QueryParser(string, analyzer));
 		}
+		queryParserMap.put("paper", new MultiFieldQueryParser(paperField, analyzer));
 	}
 
 	public void destroy() {
@@ -63,6 +66,21 @@ public class QueryUtil {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public List<HitsEntity> searchPaper(String term) throws ParseException, IOException{
+		List<HitsEntity> hitsEntities = new ArrayList<>();
+		QueryParser queryParser = queryParserMap.get("paper");
+		Query query = queryParser.parse(term);
+		ScoreDoc[] hits = indexSearcher.search(query,10).scoreDocs;
+		for (ScoreDoc scoreDoc : hits) {
+			Document document = indexSearcher.doc(scoreDoc.doc);
+			HitsEntity hitsEntity = new HitsEntity();
+			hitsEntity.setScore(scoreDoc.score);
+			hitsEntity.setGraphId(document.get("Id"));
+			hitsEntities.add(hitsEntity);
+		}
+		return hitsEntities;
 	}
 
 	public List<HitsEntity> searchByPropertiesNameAndValue(String properties, String term)
@@ -108,8 +126,9 @@ public class QueryUtil {
 	public static void main(String[] args) throws IOException, ParseException {
 		QueryUtil queryResult = new QueryUtil();
 		queryResult.init();
-		System.out.println(queryResult.searchByPropertiesNameAndValue("name", "感冒"));
-//		queryResult.searchByPropertiesNameAndValue("abstract_content", "胎盘");
+		System.out.println(queryResult.searchByPropertiesNameAndValue("name","胎盘"));
+//		System.out.println(queryResult.searchPaper("胎盘"));
+		// queryResult.searchByPropertiesNameAndValue("abstract_content", "胎盘");
 		queryResult.destroy();
 	}
 

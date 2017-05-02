@@ -148,17 +148,6 @@ public class WOSPaperFormatterImpl implements IPaperFormatter {
 	}
 
 	public static void main(String[] args) {
-		String tem = "﻿FN".trim();
-		String tem3 = "FN".trim();
-		System.out.println(Integer.valueOf(tem.charAt(0)));
-		System.out.println(tem3.length());
-		System.out.println(tem3.equals(tem));
-		String tem4 = "ER";
-		System.out.println(tem4.length());
-		System.out.println(tem4.equals("ER"));
-//		String tem2 = "   Labazzo, Kristen";
-//		System.out.println(tem.matches(LINE_REGEXP));
-//		System.out.println(tem2.matches(LINE_REGEXP));
 	}
 	
 }
