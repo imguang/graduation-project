@@ -26,6 +26,13 @@ public class PaperQueryService {
 	@Autowired
 	private PaperService paperService;
 	
+	/**
+	 * 查询中文文档
+	 * @param term
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public List<Paper> queryByItem(String term) throws ParseException, IOException{
 		List<Paper> papers = new ArrayList<>();
 		List<HitsEntity> hitsEntities = queryUtil.searchPaper(term);
@@ -33,6 +40,16 @@ public class PaperQueryService {
 		for (HitsEntity hitsEntity : hitsEntities) {
 			papers.add(paperService.findById(hitsEntity.getGraphId()));
 		}
+		return papers;
+	}
+	
+	/**
+	 * 查询英文文档
+	 * @return
+	 */
+	public List<Paper> queryByItemForEN(String term){
+		List<Paper> papers = new ArrayList<>();
+		papers.addAll(paperService.findByTagAndPage(term, 0));
 		return papers;
 	}
 	

@@ -2,6 +2,7 @@ package com.imguang.demo.neo4j.entity;
 
 import java.util.Set;
 
+
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -29,10 +30,17 @@ public class Paper {
 	private Integer pageNum;
 	private Integer citedNum;
 	private Integer referencesNum;
+	private String tag;
 	
 	@Relationship(type="references",direction=Relationship.OUTGOING)
 	private Set<Paper> papers;
 	
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 	public Long getGraphId() {
 		return graphId;
 	}

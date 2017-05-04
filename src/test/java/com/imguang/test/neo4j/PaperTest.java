@@ -24,14 +24,15 @@ public class PaperTest extends BaseJunit4Test{
 	WOSPaperFormatterImplV2 wosPaperFormatterImplV2;
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void addPaperTest() throws IOException{
 		String urlPath = "C:\\Users\\书生\\Desktop\\论文";
 		Set<Paper> papers = wosPaperFormatterImplV2.eachMethod(urlPath);
 		paperService.saveBath(papers);
 	}
 	
-	@Test
+//	@Test
+	@Ignore
 	public void addRelationTest(){
 		List<Paper> papers = (List<Paper>) paperService.getAll();
 		List<Paper> citedPapers = new ArrayList<>();

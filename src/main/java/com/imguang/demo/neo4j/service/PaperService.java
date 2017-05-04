@@ -25,4 +25,8 @@ public class PaperService {
 	public Paper findById(Long id){
 		return paperRepository.findById(id);
 	}
+	
+	public List<Paper> findByTagAndPage(String tag,Integer start){
+		return paperRepository.findByTag(tag, start * 10);
+	}
 }

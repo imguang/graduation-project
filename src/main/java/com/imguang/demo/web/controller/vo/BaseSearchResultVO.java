@@ -11,11 +11,18 @@ public class BaseSearchResultVO {
 	private List<BaseEntity> symptomRelations;
 	private List<BaseEntity> medicineRelations;
 	private List<Paper> papers;
+	private List<Paper> papersEN;
 	private List<String> words;
 	public static final String DISEASE = "disease";
 	public static final String SYMPTOM = "symptom";
 	public static final String MEDICINE = "medicine";
 	
+	public List<Paper> getPapersEN() {
+		return papersEN;
+	}
+	public void setPapersEN(List<Paper> papersEN) {
+		this.papersEN = papersEN;
+	}
 	public String getFlag() {
 		return flag;
 	}

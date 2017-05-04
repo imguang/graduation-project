@@ -28,6 +28,7 @@ public class SearchController extends BaseController{
 	
 	@Autowired
 	SplitWordsService splitWordsService;
+	
 
 	/**
 	 * 关键词搜索
@@ -44,6 +45,7 @@ public class SearchController extends BaseController{
 		System.out.println(words);
 		BaseSearchResultVO basesearchResult = luceneQueryService.queryByTerm(words);
 		basesearchResult.setPapers(paperQueryService.queryByItem(words));
+		basesearchResult.setPapersEN(paperQueryService.queryByItemForEN(words));
 		basesearchResult.setWords(splitWordsService.splitResult(words));
 		System.out.println(System.currentTimeMillis() - start);
 		return new Response().success(basesearchResult);

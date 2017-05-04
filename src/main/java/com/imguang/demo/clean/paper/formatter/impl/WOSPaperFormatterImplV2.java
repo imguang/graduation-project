@@ -36,7 +36,7 @@ public class WOSPaperFormatterImplV2 {
 		} else {
 			paper.setAuthorEN(oneMap.get("AU"));
 		}
-		paper.setBeginPage(StringUtils.parseInt(oneMap.get("BP")));
+//		paper.setBeginPage(StringUtils.parseInt(oneMap.get("BP")));
 		paper.setCitedNum(StringUtils.parseInt(oneMap.get("Z9")));
 		paper.setDOI(oneMap.get("DI"));
 		paper.setKeyWords(oneMap.get("Z5"));
@@ -53,6 +53,7 @@ public class WOSPaperFormatterImplV2 {
 		} else{
 			paper.setTitleEN(oneMap.get("TI"));
 		}
+		paper.setTag(oneMap.get("tag"));
 //		logger.info(paper+"");
 		return paper;
 	}
@@ -60,6 +61,10 @@ public class WOSPaperFormatterImplV2 {
 	public static int ll = 0;
 	
 	public Set<Paper> doFormat(String urlPath) throws IOException {
+		return doFormat(urlPath,"");
+	}
+	
+	public Set<Paper> doFormat(String urlPath,String tag) throws IOException {
 		logger.info("begin:" + urlPath);
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(urlPath));
 		String line;
@@ -76,12 +81,14 @@ public class WOSPaperFormatterImplV2 {
 			}
 			Map<String, String> paper = new HashMap<>();
 			if(keys.length != values.length){
-				logger.error("keyNum not equal valueNum,cnt:" + cnt + ",url:" + urlPath);
-				continue;
+				logger.error("keyNum:" + keys.length + " not equal valueNum:" + values.length + ",cnt:" + cnt + ",url:" + urlPath);
+//				continue;
+//				values
 			}
-			for(int i=0;i < keys.length;i++){
+			for(int i=0;i < values.length;i++){
 				paper.put(keys[i], values[i]);
 			}
+			paper.put("tag", tag);
 			temPapers.add(splitOne(paper));
 			ll++;
 		}
@@ -101,9 +108,14 @@ public class WOSPaperFormatterImplV2 {
 		if(file.isDirectory()){
 			File[] files = file.listFiles();
 			for (File file2 : files) {
-				if(file2.getName().startsWith("download")){
-					papers.addAll(doFormat(file2.getAbsolutePath()));
+				if(file2.getName().startsWith("en")){
+					String tag = file2.getName().split("_")[1];
+					logger.info("开始:" + tag);
+					papers.addAll(doFormat(file2.getAbsolutePath(),tag));
 				}
+//				if(file2.getName().startsWith("download")){
+//					papers.addAll(doFormat(file2.getAbsolutePath()));
+//				}
 			}
 			logger.info("共有：" + papers.size() + "条！");
 		} 
@@ -114,7 +126,7 @@ public class WOSPaperFormatterImplV2 {
 	public static void main(String[] args) throws IOException {
 		String urlPath = "C:\\Users\\书生\\Desktop\\论文";
 		WOSPaperFormatterImplV2 paperFormatterImplV2 = new WOSPaperFormatterImplV2();
-		paperFormatterImplV2.eachMethod(urlPath);
+		Set<Paper> papers = paperFormatterImplV2.eachMethod(urlPath);
 	}
 
 }
