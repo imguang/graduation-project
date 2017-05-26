@@ -1,6 +1,7 @@
 package com.imguang.demo.neo4j.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
@@ -17,5 +18,8 @@ public interface PaperRepository extends GraphRepository<Paper> {
 
 	@Query("MATCH (n:Paper) where  n.tag contains {0} return n order by n.publishYear desc,n.citedNum desc skip {1} limit 10")
 	List<Paper> findByTag(String tag,Integer start);
+	
+	@Query("MATCH (n:Paper) where  n.title contains {0} return n")
+	Set<Paper> findByTitle(String title);
 
 }

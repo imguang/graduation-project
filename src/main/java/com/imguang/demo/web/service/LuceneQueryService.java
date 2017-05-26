@@ -109,7 +109,7 @@ public class LuceneQueryService {
 		BaseSearchResultVO baseSearchResultVO = null;
 
 		/*
-		 * 搜索策略 1.首先搜索名称如果搜到则返回 2.如果没有对应名称，则搜索对应属性 3.如果还是没有，则用Word2Vec发现新词 @TODO
+		 * 搜索策略 1.首先搜索名称如果搜到则返回 2.如果没有对应名称，则搜索对应属性 
 		 */
 		// first
 		log.info("开始检索");

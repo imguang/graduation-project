@@ -8,10 +8,8 @@ import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
 public class Disease {
-
 	@GraphId
 	private Long graphId;
-
 	private String id;
 	private String diseaseName;
 	private String abstractContent;
@@ -29,6 +27,23 @@ public class Disease {
 	private String nursing;
 	private String prevent;
 	private String imgUrl;
+	@Relationship(type="disease-medicine",direction=Relationship.UNDIRECTED)
+	private Set<Medicine> medicines;
+	@Relationship(type="disease-symptom",direction=Relationship.UNDIRECTED)
+	private Set<Symptom> symptoms;
+	@Relationship(type="neopathy",direction=Relationship.UNDIRECTED)
+	private Set<Disease> Disease;
+	
+	@Relationship(type="papers",direction=Relationship.UNDIRECTED)
+	private Set<Paper> papers;
+	
+	public Set<Paper> getPapers() {
+		return papers;
+	}
+
+	public void setPapers(Set<Paper> papers) {
+		this.papers = papers;
+	}
 
 	public String getImgUrl() {
 		return imgUrl;
@@ -37,17 +52,6 @@ public class Disease {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
-
-	@Relationship(type="disease-medicine",direction=Relationship.UNDIRECTED)
-	private Set<Medicine> medicines;
-
-	@Relationship(type="disease-symptom",direction=Relationship.UNDIRECTED)
-	private Set<Symptom> symptoms;
-	
-	@Relationship(type="neopathy",direction=Relationship.UNDIRECTED)
-	private Set<Disease> Disease;
-	
-	
 
 	public Set<Disease> getDisease() {
 		return Disease;

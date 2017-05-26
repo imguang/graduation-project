@@ -1,6 +1,7 @@
 package com.imguang.demo.neo4j.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,10 @@ public class DiseaseService {
 	
 	@Autowired
 	DiseaseRepository diseaseRepository;
+	
+	public Set<Disease> getByName(String name){
+		return diseaseRepository.getDiseaseByDiseaseName(name);
+	}
 	
 	public Disease create(Disease disease){
 		return diseaseRepository.save(disease);

@@ -11,7 +11,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.imguang.demo.clean.paper.formatter.impl.WOSPaperFormatterImplV2;
+import com.imguang.demo.neo4j.entity.Disease;
 import com.imguang.demo.neo4j.entity.Paper;
+import com.imguang.demo.neo4j.service.DiseaseService;
 import com.imguang.demo.neo4j.service.PaperService;
 import com.imguang.test.common.BaseJunit4Test;
 
@@ -21,17 +23,33 @@ public class PaperTest extends BaseJunit4Test{
 	PaperService paperService;
 	
 	@Autowired
+	DiseaseService diseaseService;
+	
+	@Autowired
 	WOSPaperFormatterImplV2 wosPaperFormatterImplV2;
 	
 	@Test
-//	@Ignore
+	public void addPaperDiseaseRelations(){
+		Set<Paper> papers = paperService.getByTitle("胎盘");
+		Set<Disease> diseases = diseaseService.getByName("胎盘");
+		List<Disease> diseases2 = new ArrayList<>();
+		for (Disease disease : diseases) {
+			disease.setPapers(papers);
+			diseases2.add(disease);
+		}
+		diseaseService.saveBath(diseases2);
+	}
+	
+	
+	@Test
+	@Ignore
 	public void addPaperTest() throws IOException{
 		String urlPath = "C:\\Users\\书生\\Desktop\\论文";
 		Set<Paper> papers = wosPaperFormatterImplV2.eachMethod(urlPath);
 		paperService.saveBath(papers);
 	}
 	
-//	@Test
+	@Test
 	@Ignore
 	public void addRelationTest(){
 		List<Paper> papers = (List<Paper>) paperService.getAll();

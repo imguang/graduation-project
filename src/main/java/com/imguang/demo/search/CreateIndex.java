@@ -1,6 +1,5 @@
 package com.imguang.demo.search;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +41,6 @@ import com.imguang.demo.neo4j.service.SymptomService;
 /**
  * @author 书生 Lucene 生成索引
  */
-@Component
 public class CreateIndex {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateIndex.class);
@@ -107,12 +105,13 @@ public class CreateIndex {
 	
 	public void addPaper(List<Paper> papers) throws IOException {
 		int cnt = 0;
-		for (Paper paper : papers) {
+		for (Paper paper : papers) {//遍历每篇论文
 			//时间衰减权重
 			float timeFactor = (float) Math.pow(LuceneConst.TIME_BASE,
 					(LuceneConst.TIME_NOW - paper.getPublishYear()) / LuceneConst.TIME_B);
 			cnt++;
 			logger.info("正在添加第" + cnt + "条。factor:" + timeFactor);
+			//构建Lucene document
 			Document document = new Document();
 			document.add(getTextField("paper_title", paper.getTitle(), timeFactor));
 			document.add(getTextField("paper_abstract", paper.getAbstracts(), timeFactor * 0.8f));
@@ -121,6 +120,7 @@ public class CreateIndex {
 			document.add(getTextField("paper_publisher", paper.getPublisher(), timeFactor));
 			document.add(new IntField("paper_year", paper.getPublishYear(), Store.YES));
 			document.add(new LongField("Id", paper.getGraphId(), Store.YES));
+			//加入索引
 			indexWriter.addDocument(document);
 		}
 		indexWriter.close();
